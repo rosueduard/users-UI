@@ -256,20 +256,35 @@ interface Toast {
           <h2 class="font-display text-xl font-bold text-white mb-6">
             {{ editingUser() ? '✏️ Editează Utilizator' : '＋ Adaugă Utilizator' }}
           </h2>
-
           <form
             [formGroup]="userForm"
             (ngSubmit)="onSubmit()"
             class="grid grid-cols-1 md:grid-cols-3 gap-5"
           >
             <div>
-              <label class="block text-xs text-slate-400 mb-2 uppercase tracking-wider">Nume</label>
+              <label class="block text-xs text-slate-400 mb-2 uppercase tracking-wider"
+                >First Name</label
+              >
               <input
-                formControlName="name"
+                formControlName="firstName"
                 class="input-field w-full px-4 py-3 rounded-xl text-sm"
-                placeholder="ex: Ion Popescu"
+                placeholder="ex: Ion"
               />
-              @if (userForm.get('name')?.invalid && userForm.get('name')?.touched) {
+              @if (userForm.get('firstName')?.invalid && userForm.get('firstName')?.touched) {
+                <p class="text-red-400 text-xs mt-1">Prenumele este obligatoriu.</p>
+              }
+            </div>
+
+            <div>
+              <label class="block text-xs text-slate-400 mb-2 uppercase tracking-wider"
+                >Last Name</label
+              >
+              <input
+                formControlName="lastName"
+                class="input-field w-full px-4 py-3 rounded-xl text-sm"
+                placeholder="ex: Popescu"
+              />
+              @if (userForm.get('lastName')?.invalid && userForm.get('lastName')?.touched) {
                 <p class="text-red-400 text-xs mt-1">Numele este obligatoriu.</p>
               }
             </div>
@@ -481,12 +496,14 @@ export class App implements OnInit {
 
   startEdit(user: User): void {
     this.editingUser.set(user);
-    this.userForm.patchValue({
-      firstNane: user.firstName,
+
+    this.userForm.setValue({
+      firstName: user.firstName,
       lastName: user.lastName,
       email: user.email,
       role: user.role ?? '',
     });
+
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
