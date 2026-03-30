@@ -1,0 +1,8 @@
+{
+  "/dev": {
+    "target": "https://k0kufoz0yl.execute-api.eu-north-1.amazonaws.com",
+    "secure": true,
+    "changeOrigin": true,
+    "logLevel": "debug"
+  }
+}
