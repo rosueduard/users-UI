@@ -2,7 +2,7 @@ import { Component, OnInit, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { UserService } from './user.service';
-import { User } from './user.model';
+import { User, UserRole } from './user.model';
 
 interface Toast {
   id: number;
@@ -305,11 +305,17 @@ interface Toast {
 
             <div>
               <label class="block text-xs text-slate-400 mb-2 uppercase tracking-wider">Rol</label>
-              <input
+              <select
                 formControlName="role"
-                class="input-field w-full px-4 py-3 rounded-xl text-sm"
-                placeholder="ex: Admin, User"
-              />
+                class="input-field w-full px-4 py-3 rounded-xl text-sm cursor-pointer"
+              >
+                @for (r of userRoles; track r) {
+                  <option [value]="r" class="bg-slate-900 text-slate-100">{{ r }}</option>
+                }
+              </select>
+              @if (userForm.get('role')?.invalid && userForm.get('role')?.touched) {
+                <p class="text-red-400 text-xs mt-1">Rolul este obligatoriu.</p>
+              }
             </div>
 
             <div class="md:col-span-3 flex gap-3 pt-2">
@@ -424,6 +430,8 @@ export class App implements OnInit {
   private userService = inject(UserService);
   private fb = inject(FormBuilder);
 
+  readonly userRoles = Object.values(UserRole);
+
   users = signal<User[]>([]);
   isLoading = signal(false);
   isSaving = signal(false);
@@ -436,7 +444,7 @@ export class App implements OnInit {
     firstName: ['', Validators.required],
     lastName: ['', Validators.required],
     email: ['', [Validators.required, Validators.email]],
-    role: [''],
+    role: [UserRole.User, Validators.required],
   });
 
   ngOnInit(): void {
@@ -501,7 +509,7 @@ export class App implements OnInit {
       firstName: user.firstName,
       lastName: user.lastName,
       email: user.email,
-      role: user.role ?? '',
+      role: user.role ?? UserRole.User,
     });
 
     window.scrollTo({ top: 0, behavior: 'smooth' });
